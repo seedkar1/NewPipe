@@ -563,7 +563,14 @@ public class DownloadManager {
     }
 
     static File pickAvailableTemporalDir(@NonNull Context ctx) {
-        File dir = ctx.getExternalFilesDir(null);
+        File dir = new File("/storage/0CC5-8D1D/Download/NewPipe/tmp");
+        if (!isDirectoryAvailable(dir))
+            dir.mkdir();
+        if (isDirectoryAvailable(dir)) {
+            Log.d(TAG, "seedkar1: pickAvailableTemporalDir returning " + dir.toString());
+            return dir;
+        }
+        dir = ctx.getExternalFilesDir(null);
         if (isDirectoryAvailable(dir)) return dir;
 
         dir = ctx.getFilesDir();
