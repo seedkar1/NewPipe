@@ -564,8 +564,16 @@ public class DownloadManager {
 
     static File pickAvailableTemporalDir(@NonNull Context ctx) {
         File dir = new File("/storage/0CC5-8D1D/Download/NewPipe/tmp");
-        if (!isDirectoryAvailable(dir))
-            dir.mkdir();
+        if (!isDirectoryAvailable(dir)) {
+            if(!dir.mkdir()) {
+                Log.d(TAG, "seedkar1: pickAvailableTemporalDir: mkdir() failed " + dir.toString());
+            }
+        }
+        if (!isDirectoryAvailable(dir)) {
+            if(!dir.mkdirs()) {
+                Log.d(TAG, "seedkar1: pickAvailableTemporalDir: mkdirs() failed " + dir.toString());
+            }
+        }
         if (isDirectoryAvailable(dir)) {
             Log.d(TAG, "seedkar1: pickAvailableTemporalDir returning " + dir.toString());
             return dir;
