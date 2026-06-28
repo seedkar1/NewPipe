@@ -251,7 +251,7 @@ public abstract class Postprocessing implements Serializable {
 		private StoredFileHelper tempStorage;
 		private FileStream tempFileStream;
 		private boolean isStoredFileHelper;
-		public PreferredTempFile(const StoredDirectoryHelper& mainStorage, const File& directory) {
+		public PreferredTempFile(StoredDirectoryHelper mainStorage, File directory) {
 			long rnd = (int) (Math.random() * 100000.0f);
 			String fileName = rnd + "_" + System.nanoTime() + ".tmp";
 			isStoredFileHelper = false;
@@ -268,7 +268,7 @@ public abstract class Postprocessing implements Serializable {
 				createTempFile(directory, fileName);
 			}
 		}
-		private void createTempFile(const File& directory, const String& fileName) {
+		private void createTempFile(File directory, String fileName) {
 			tempFile = new File(directory, fileName);
 			tempFileStream = new FileStream(tempFile);
 			isStoredFileHelper = false;
@@ -285,7 +285,7 @@ public abstract class Postprocessing implements Serializable {
 			tempStorage = null;
 			isStoredFileHelper = false;
 		}
-		public getStream() {
+		public FileStream getStream() {
 			return tempFileStream;
 		}
 	}
