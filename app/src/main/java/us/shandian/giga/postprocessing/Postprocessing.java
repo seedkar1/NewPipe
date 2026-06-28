@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+import us.shandian.giga.service.DownloadManager;
 import us.shandian.giga.get.DownloadMission;
 import us.shandian.giga.io.ChunkFileInputStream;
 import us.shandian.giga.io.CircularFileWriter;
@@ -83,7 +84,7 @@ public abstract class Postprocessing implements Serializable {
 
     private transient DownloadMission mission;
 
-    private transient File tempFile;
+    private transient PreferredTempFile tempFile;
 
     Postprocessing(boolean reserveSpace, boolean worksOnSameFile, String algorithmName) {
         this.reserveSpace = reserveSpace;
@@ -92,21 +93,12 @@ public abstract class Postprocessing implements Serializable {
     }
 
     public void setTemporalDir(@NonNull File directory) {
-        long rnd = (int) (Math.random() * 100000.0f);
-        tempFile = new File(directory, rnd + "_" + System.nanoTime() + ".tmp");
+        tempFile = new PreferredTempFile(getMainStorage(DownloadManager::TAG_VIDEO), directory);
     }
 
     public void cleanupTemporalDir() {
-        if (tempFile != null && tempFile.exists()) {
-            try {
-                //noinspection ResultOfMethodCallIgnored
-                tempFile.delete();
-            } catch (Exception e) {
-                // nothing to do
-            }
-        }
+        tempFile.deleteTempFile();
     }
-
 
     public void run(DownloadMission target) throws IOException {
         this.mission = target;
@@ -154,7 +146,7 @@ public abstract class Postprocessing implements Serializable {
                     };
 
                     try (CircularFileWriter out = new CircularFileWriter(
-                            mission.storage.getStream(), tempFile, checker)) {
+                            mission.storage.getStream(), tempFile.getStream(), checker)) {
                         out.onProgress = (long position) -> mission.done = position;
 
                         out.onWriteError = err -> {
@@ -188,11 +180,7 @@ public abstract class Postprocessing implements Serializable {
                         source.close();
                     }
                 }
-                if (tempFile != null) {
-                    //noinspection ResultOfMethodCallIgnored
-                    tempFile.delete();
-                    tempFile = null;
-                }
+                cleanupTemporalDir();
             }
         } else {
             result = test() ? process(null) : OK_RESULT;
@@ -258,4 +246,47 @@ public abstract class Postprocessing implements Serializable {
 
         return str.append("] }").toString();
     }
+	class PreferredTempFile {
+		private File tempFile;
+		private StoredFileHelper tempStorage;
+		private FileStream tempFileStream;
+		private boolean isStoredFileHelper;
+		public PreferredTempFile(const StoredDirectoryHelper& mainStorage, const File& directory) {
+			long rnd = (int) (Math.random() * 100000.0f);
+			String fileName = rnd + "_" + System.nanoTime() + ".tmp";
+			isStoredFileHelper = false;
+			try {
+				if( mainStorage != null )
+					tempStorage = mainStorage.createFile(fileName, DEFAULT_MIME, false);
+				if (tempStorage == null || !tempStorage.canWrite()) {
+					createTempFile(directory, fileName);
+				} else {
+					tempFileStream = storage.getStream();
+					isStoredFileHelper = true;
+				}				
+			} catch (IOException e) {
+				createTempFile(directory, fileName);
+			}
+		}
+		private void createTempFile(const File& directory, const String& fileName) {
+			tempFile = new File(directory, fileName);
+			tempFileStream = new FileStream(tempFile);
+			isStoredFileHelper = false;
+		}
+		public void deleteTempFile() {
+			if(tempFileStream != null && !tempFileStream.isClosed())
+				tempFileStream.close();
+			if(isStoredFileHelper)
+				tempStorage.delete();
+			else
+				tempFile.delete();
+			tempFile = null;
+			tempFileStream = null;
+			tempStorage = null;
+			isStoredFileHelper = false;
+		}
+		public getStream() {
+			return tempFileStream;
+		}
+	}
 }

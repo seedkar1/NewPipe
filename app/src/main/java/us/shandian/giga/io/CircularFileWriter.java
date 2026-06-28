@@ -44,6 +44,17 @@ public class CircularFileWriter extends SharpStream {
         reportPosition = NOTIFY_BYTES_INTERVAL;
     }
 
+    public CircularFileWriter(SharpStream target, SharpStream tempFileStream, OffsetChecker checker) throws IOException {
+        Objects.requireNonNull(checker);
+
+        aux = new BufferedFile(tempFileStream);
+        out = new BufferedFile(target);
+
+        callback = checker;
+
+        reportPosition = NOTIFY_BYTES_INTERVAL;
+    }
+
     private void flushAuxiliar(long amount) throws IOException {
         if (aux.length < 1) {
             return;
