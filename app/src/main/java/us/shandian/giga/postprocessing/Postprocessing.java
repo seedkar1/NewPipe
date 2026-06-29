@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.schabi.newpipe.streams.io.StoredDirectoryHelper;
+import org.schabi.newpipe.streams.io.StoredFileHelper;
+import us.shandian.giga.io.FileStream
 import us.shandian.giga.service.DownloadManager;
 import us.shandian.giga.get.DownloadMission;
 import us.shandian.giga.io.ChunkFileInputStream;
@@ -257,11 +260,11 @@ public abstract class Postprocessing implements Serializable {
 			isStoredFileHelper = false;
 			try {
 				if( mainStorage != null )
-					tempStorage = mainStorage.createFile(fileName, DEFAULT_MIME, false);
+					tempStorage = mainStorage.createFile(fileName, StoredFileHelper::DEFAULT_MIME, false);
 				if (tempStorage == null || !tempStorage.canWrite()) {
 					createTempFile(directory, fileName);
 				} else {
-					tempFileStream = storage.getStream();
+					tempFileStream = tempStorage.getStream();
 					isStoredFileHelper = true;
 				}				
 			} catch (IOException e) {
