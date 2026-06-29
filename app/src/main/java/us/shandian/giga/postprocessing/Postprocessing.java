@@ -14,6 +14,7 @@ import java.io.Serializable;
 import org.schabi.newpipe.streams.io.StoredDirectoryHelper;
 import org.schabi.newpipe.streams.io.StoredFileHelper;
 import us.shandian.giga.io.FileStream;
+import java.io.FileNotFoundException;
 import us.shandian.giga.service.DownloadManager;
 import us.shandian.giga.get.DownloadMission;
 import us.shandian.giga.io.ChunkFileInputStream;
@@ -273,7 +274,11 @@ public abstract class Postprocessing implements Serializable {
 		}
 		private void createTempFile(File directory, String fileName) {
 			tempFile = new File(directory, fileName);
-			tempFileStream = new FileStream(tempFile);
+            try {
+			    tempFileStream = new FileStream(tempFile);
+            } catch (FileNotFoundException e) { // never happens ??
+                tempFileStream = null;
+            }
 			isStoredFileHelper = false;
 		}
 		public void deleteTempFile() {
