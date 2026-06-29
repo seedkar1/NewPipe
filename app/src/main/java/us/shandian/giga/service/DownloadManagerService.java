@@ -415,7 +415,7 @@ public class DownloadManagerService extends Service {
         mission.recoveryInfo = recovery.toArray(new MissionRecoveryInfo[0]);
 
         if (ps != null)
-            ps.setTemporalDir(DownloadManager.pickAvailableTemporalDir(this));
+            ps.setTemporalDir(DownloadManager.pickAvailableTemporalDir(this), loadMainVideoStorage());
 
         handleConnectivityState(true);// first check the actual network status
 

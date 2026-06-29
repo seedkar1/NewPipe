@@ -92,8 +92,8 @@ public abstract class Postprocessing implements Serializable {
         this.name = algorithmName;// for debugging only
     }
 
-    public void setTemporalDir(@NonNull File directory) {
-        tempFile = new PreferredTempFile(getMainStorage(DownloadManager::TAG_VIDEO), directory);
+    public void setTemporalDir(@NonNull File directory, StoredDirectoryHelper mainStorage) {
+        tempFile = new PreferredTempFile(mainStorage, directory);
     }
 
     public void cleanupTemporalDir() {

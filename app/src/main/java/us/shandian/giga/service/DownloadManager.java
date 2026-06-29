@@ -208,7 +208,7 @@ public class DownloadManager {
 
             if (mis.psAlgorithm != null) {
                 mis.psAlgorithm.cleanupTemporalDir();
-                mis.psAlgorithm.setTemporalDir(tempDir);
+                mis.psAlgorithm.setTemporalDir(tempDir, mMainStorageVideo);
             }
 
             mis.metadata = sub;
