@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 import org.schabi.newpipe.streams.io.StoredDirectoryHelper;
 import org.schabi.newpipe.streams.io.StoredFileHelper;
-import us.shandian.giga.io.FileStream
+import us.shandian.giga.io.FileStream;
 import us.shandian.giga.service.DownloadManager;
 import us.shandian.giga.get.DownloadMission;
 import us.shandian.giga.io.ChunkFileInputStream;
