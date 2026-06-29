@@ -252,7 +252,7 @@ public abstract class Postprocessing implements Serializable {
 	class PreferredTempFile {
 		private File tempFile;
 		private StoredFileHelper tempStorage;
-		private FileStream tempFileStream;
+		private SharpStream tempFileStream;
 		private boolean isStoredFileHelper;
 		public PreferredTempFile(StoredDirectoryHelper mainStorage, File directory) {
 			long rnd = (int) (Math.random() * 100000.0f);
@@ -260,7 +260,7 @@ public abstract class Postprocessing implements Serializable {
 			isStoredFileHelper = false;
 			try {
 				if( mainStorage != null )
-					tempStorage = mainStorage.createFile(fileName, StoredFileHelper::DEFAULT_MIME, false);
+					tempStorage = mainStorage.createFile(fileName, StoredFileHelper.DEFAULT_MIME, false);
 				if (tempStorage == null || !tempStorage.canWrite()) {
 					createTempFile(directory, fileName);
 				} else {
