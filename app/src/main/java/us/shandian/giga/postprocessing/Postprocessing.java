@@ -303,23 +303,5 @@ public abstract class Postprocessing implements Serializable {
 		public SharpStream getStream() {
 			return tempFileStream;
 		}
-
-        public void showMessageBox(String msg) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("PreferredTempFile");
-            builder.setMessage(msg);
-            
-            // Set up the OK button
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss(); // Dismisses the dialog when OK is clicked
-                }
-            });
-            
-            // Show the dialog
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
 	}
 }
