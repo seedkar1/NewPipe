@@ -265,11 +265,9 @@ public abstract class Postprocessing implements Serializable {
 			try {
                 final String TAG = "seedkar1:PreferredTempFile";
                 Log.i(TAG, "mainStorage = " + ( mainStorage != null ? mainStorage.getUri().getPath() : "null" ));
-                showMessageBox("mainStorage = " + ( mainStorage != null ? mainStorage.getUri().getPath() : "null" ) );
 				if( mainStorage != null )
 					tempStorage = mainStorage.createFile(fileName, StoredFileHelper.DEFAULT_MIME);
                 Log.i(TAG, "tempStorage = " + ( tempStorage != null ? tempStorage.getUri().getPath() : "null" ) );
-                showMessageBox("tempStorage = " + ( tempStorage != null ? tempStorage.getUri().getPath() : "null" ) );
 				if (tempStorage == null || !tempStorage.canWrite()) {
 					createTempFile(directory, fileName);
 				} else {
@@ -277,7 +275,6 @@ public abstract class Postprocessing implements Serializable {
 					isStoredFileHelper = true;
 				}				
                 Log.i(TAG, "tempFile = " + tempFile.toString() );
-                showMessageBox("tempFile = " + tempFile.toString() );
 			} catch (IOException e) {
 				createTempFile(directory, fileName);
 			}
