@@ -15,6 +15,9 @@ import org.schabi.newpipe.streams.io.StoredDirectoryHelper;
 import org.schabi.newpipe.streams.io.StoredFileHelper;
 import us.shandian.giga.io.FileStream;
 import java.io.FileNotFoundException;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import us.shandian.giga.service.DownloadManager;
 import us.shandian.giga.get.DownloadMission;
 import us.shandian.giga.io.ChunkFileInputStream;
@@ -260,14 +263,21 @@ public abstract class Postprocessing implements Serializable {
 			String fileName = rnd + "_" + System.nanoTime() + ".tmp";
 			isStoredFileHelper = false;
 			try {
+                final String TAG = "seedkar1:PreferredTempFile";
+                Log.i(TAG, "mainStorage = " + ( mainStorage != null ? mainStorage.getUri().getPath() : "null" ));
+                showMessageBox("mainStorage = " + ( mainStorage != null ? mainStorage.getUri().getPath() : "null" ) );
 				if( mainStorage != null )
 					tempStorage = mainStorage.createFile(fileName, StoredFileHelper.DEFAULT_MIME);
+                Log.i(TAG, "tempStorage = " + ( tempStorage != null ? tempStorage.getUri().getPath() : "null" ) );
+                showMessageBox("tempStorage = " + ( tempStorage != null ? tempStorage.getUri().getPath() : "null" ) );
 				if (tempStorage == null || !tempStorage.canWrite()) {
 					createTempFile(directory, fileName);
 				} else {
 					tempFileStream = tempStorage.getStream();
 					isStoredFileHelper = true;
 				}				
+                Log.i(TAG, "tempFile = " + tempFile.toString() );
+                showMessageBox("tempFile = " + tempFile.toString() );
 			} catch (IOException e) {
 				createTempFile(directory, fileName);
 			}
@@ -296,5 +306,23 @@ public abstract class Postprocessing implements Serializable {
 		public SharpStream getStream() {
 			return tempFileStream;
 		}
+
+        public void showMessageBox(String msg) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("PreferredTempFile");
+            builder.setMessage(msg);
+            
+            // Set up the OK button
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss(); // Dismisses the dialog when OK is clicked
+                }
+            });
+            
+            // Show the dialog
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
 	}
 }
